@@ -7,7 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AddTableViewController.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, AddTableViewControllerDelegate>
+
+
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) NSMutableArray *purchasesArray;
+
+- (IBAction)addPressed:(id)sender;
+- (IBAction)editPressed:(id)sender;
+
+
 
 @end

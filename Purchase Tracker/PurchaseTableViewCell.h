@@ -10,4 +10,8 @@
 
 @interface PurchaseTableViewCell : UITableViewCell
 
+@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
+@property (strong, nonatomic) IBOutlet UILabel *subtitleLabel;
+@property (strong, nonatomic) IBOutlet UILabel *totalLabel;
+
 @end

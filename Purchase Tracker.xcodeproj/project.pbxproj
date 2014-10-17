@@ -21,6 +21,8 @@
 		52FD28E219ECB3B6009CAC8B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52FD28C419ECB3B6009CAC8B /* UIKit.framework */; };
 		52FD28EA19ECB3B6009CAC8B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 52FD28E819ECB3B6009CAC8B /* InfoPlist.strings */; };
 		52FD28EC19ECB3B6009CAC8B /* Purchase_TrackerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FD28EB19ECB3B6009CAC8B /* Purchase_TrackerTests.m */; };
+		52FD28F819ECB89F009CAC8B /* PurchaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FD28F619ECB89F009CAC8B /* PurchaseTableViewCell.m */; };
+		52FD28FF19ECBE16009CAC8B /* AddTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 52FD28FE19ECBE16009CAC8B /* AddTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,10 @@
 		52FD28E719ECB3B6009CAC8B /* Purchase TrackerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Purchase TrackerTests-Info.plist"; sourceTree = "<group>"; };
 		52FD28E919ECB3B6009CAC8B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		52FD28EB19ECB3B6009CAC8B /* Purchase_TrackerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Purchase_TrackerTests.m; sourceTree = "<group>"; };
+		52FD28F519ECB89F009CAC8B /* PurchaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PurchaseTableViewCell.h; sourceTree = "<group>"; };
+		52FD28F619ECB89F009CAC8B /* PurchaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PurchaseTableViewCell.m; sourceTree = "<group>"; };
+		52FD28FD19ECBE16009CAC8B /* AddTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddTableViewController.h; sourceTree = "<group>"; };
+		52FD28FE19ECBE16009CAC8B /* AddTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,8 +121,12 @@
 				52FD28CF19ECB3B6009CAC8B /* AppDelegate.h */,
 				52FD28D019ECB3B6009CAC8B /* AppDelegate.m */,
 				52FD28D219ECB3B6009CAC8B /* Main.storyboard */,
+				52FD28FD19ECBE16009CAC8B /* AddTableViewController.h */,
+				52FD28FE19ECBE16009CAC8B /* AddTableViewController.m */,
 				52FD28D519ECB3B6009CAC8B /* ViewController.h */,
 				52FD28D619ECB3B6009CAC8B /* ViewController.m */,
+				52FD28F519ECB89F009CAC8B /* PurchaseTableViewCell.h */,
+				52FD28F619ECB89F009CAC8B /* PurchaseTableViewCell.m */,
 				52FD28D819ECB3B6009CAC8B /* Images.xcassets */,
 				52FD28C719ECB3B6009CAC8B /* Supporting Files */,
 			);
@@ -249,7 +259,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52FD28F819ECB89F009CAC8B /* PurchaseTableViewCell.m in Sources */,
 				52FD28D719ECB3B6009CAC8B /* ViewController.m in Sources */,
+				52FD28FF19ECBE16009CAC8B /* AddTableViewController.m in Sources */,
 				52FD28D119ECB3B6009CAC8B /* AppDelegate.m in Sources */,
 				52FD28CD19ECB3B6009CAC8B /* main.m in Sources */,
 			);

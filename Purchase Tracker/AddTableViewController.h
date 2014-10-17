@@ -8,6 +8,31 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AddTableViewController : UITableViewController
+@protocol AddTableViewControllerDelegate;
+
+@interface AddTableViewController : UITableViewController <UITextFieldDelegate>
+
+@property (strong, nonatomic) IBOutlet UITextField *payeeTextField;
+@property (strong, nonatomic) IBOutlet UITextField *dateTextField;
+@property (strong, nonatomic) IBOutlet UITextField *descriptionTextField;
+@property (strong, nonatomic) IBOutlet UITextField *amountTextField;
+@property (strong, nonatomic) IBOutlet UITextField *tipTextField;
+@property (strong, nonatomic) IBOutlet UITextField *totalTextField;
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+
+@property (strong, nonatomic) NSDictionary *dictionary;
+@property (strong, nonatomic) NSNumber *index;
+
+@property (nonatomic, assign) id <AddTableViewControllerDelegate> delegate;
+
+- (IBAction)savePressed:(id)sender;
+
 
 @end
+
+@protocol AddTableViewControllerDelegate
+
+- (void) addNewPurchase:(NSDictionary *)dictionary withIndex:(NSNumber *)index;
+
+@end
+

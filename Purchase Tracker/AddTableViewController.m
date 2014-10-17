@@ -14,6 +14,8 @@
 
 @implementation AddTableViewController
 
+@synthesize dictionary = _dictionary;
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -26,94 +28,108 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.amountTextField.delegate   = self;
+    self.tipTextField.delegate      = self;
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    if ([self.dictionary isEqual:nil])
+    {
+        self.dictionary = [[NSMutableDictionary alloc] init];
+    }
+    else
+    {
+        self.payeeTextField.text        = [self.dictionary objectForKey:@"payee"];
+        self.dateTextField.text         = [self.dictionary objectForKey:@"date"];
+        self.descriptionTextField.text  = [self.dictionary objectForKey:@"description"];
+        self.amountTextField.text       = [self.dictionary objectForKey:@"amount"];
+        self.tipTextField.text          = [self.dictionary objectForKey:@"tip"];
+        self.totalTextField.text        = [self.dictionary objectForKey:@"total"];
+    }
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (IBAction)savePressed:(id)sender
 {
-#warning Potentially incomplete method implementation.
-    // Return the number of sections.
-    return 0;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
-}
-
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+    NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+                            [self.payeeTextField        text], @"payee",
+                            [self.dateTextField         text], @"date",
+                            [self.descriptionTextField  text], @"description",
+                            [self.amountTextField       text], @"amount",
+                            [self.tipTextField          text], @"tip",
+                            [self.totalTextField        text], @"total",       
+                            nil];
     
-    // Configure the cell...
+    self.dictionary = dict;
     
-    return cell;
+    [self.delegate addNewPurchase:self.dictionary withIndex:self.index];
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+    textField.text = @"";
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
+    textField.text = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    self.totalTextField.text = [self calculateTotal];
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+    return NO;
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField
 {
+    NSNumberFormatter *currencyFormatter = [[NSNumberFormatter alloc] init];
+    [currencyFormatter setLocale:[NSLocale currentLocale]];
+    [currencyFormatter setMaximumFractionDigits:2];
+    [currencyFormatter setMinimumFractionDigits:2];
+    [currencyFormatter setAlwaysShowsDecimalSeparator:YES];
+    
+    if ([textField isEqual:self.amountTextField])
+    {
+        
+        [currencyFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        
+        NSNumber *someAmount = [NSNumber numberWithDouble:[textField.text doubleValue]];
+        NSString *string = [currencyFormatter stringFromNumber:someAmount];
+        
+        textField.text = string;
+    }
+    else if ([textField isEqual:self.tipTextField])
+    {
+        if ([self.tipTextField.text floatValue] > 100 || [self.tipTextField.text floatValue] < 0)
+        {
+            NSLog(@"Show Alert");
+            self.tipTextField.text = @"";
+        }
+        else
+        {
+            [currencyFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+            
+            NSNumber *someAmount = [NSNumber numberWithDouble:[textField.text doubleValue]];
+            NSString *string = [currencyFormatter stringFromNumber:someAmount];
+            
+            textField.text = [NSString stringWithFormat:@"%@ %%", string];
+        }
+    }
 }
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSString *) calculateTotal
 {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+    NSString *amountString = [self.amountTextField.text stringByReplacingOccurrencesOfString:@"$" withString:@""];
+    NSString *tipString    = [self.tipTextField.text stringByReplacingOccurrencesOfString:@"%" withString:@""];
+    
+    float amount = [amountString floatValue];
+    float tip    = [tipString    floatValue];
+    
+    float total = ((amount/100) * tip) + amount;
+    
+    return [NSString stringWithFormat:@"$%.2f", total];
+    
 }
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
