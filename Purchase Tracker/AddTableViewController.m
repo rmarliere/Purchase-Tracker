@@ -33,7 +33,7 @@
     
     if ([self.dictionary isEqual:nil])
     {
-        self.dictionary = [[NSMutableDictionary alloc] init];
+        self.dictionary = [[NSDictionary alloc] init];
     }
     else
     {
@@ -120,8 +120,9 @@
 
 - (NSString *) calculateTotal
 {
-    NSString *amountString = [self.amountTextField.text stringByReplacingOccurrencesOfString:@"$" withString:@""];
-    NSString *tipString    = [self.tipTextField.text stringByReplacingOccurrencesOfString:@"%" withString:@""];
+    NSString *amountString  = [self.amountTextField.text    stringByReplacingOccurrencesOfString:@"$" withString:@""];
+    amountString            = [amountString                 stringByReplacingOccurrencesOfString:@"," withString:@""];
+    NSString *tipString     = [self.tipTextField.text       stringByReplacingOccurrencesOfString:@"%" withString:@""];
     
     float amount = [amountString floatValue];
     float tip    = [tipString    floatValue];

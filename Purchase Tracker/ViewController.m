@@ -31,11 +31,15 @@
 
 - (void) addNewPurchase:(NSDictionary *)dictionary withIndex:(NSNumber *)index
 {
-    if ([index isEqual:nil])
+    if (index == nil)
     {
-        index = 0;
+        [self.purchasesArray insertObject:dictionary atIndex:0];
     }
-    [self.purchasesArray insertObject:dictionary atIndex:[index integerValue]];
+    else
+    {
+        [self.purchasesArray replaceObjectAtIndex:[index intValue] withObject:dictionary];
+    }
+    
     [self.tableView reloadData];
 }
 
@@ -65,7 +69,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self callAddVCWithDictionary:[self.purchasesArray objectAtIndex:indexPath.row] AndIndex:[NSNumber numberWithInteger:indexPath.row]];
-    [self.purchasesArray removeObjectAtIndex:indexPath.row];
+    //[self.purchasesArray removeObjectAtIndex:indexPath.row];
 }
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
