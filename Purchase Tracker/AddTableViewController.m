@@ -53,19 +53,22 @@
 
 - (IBAction)savePressed:(id)sender
 {
-    NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                            [self.payeeTextField        text], @"payee",
-                            [self.dateTextField         text], @"date",
-                            [self.descriptionTextField  text], @"description",
-                            [self.amountTextField       text], @"amount",
-                            [self.tipTextField          text], @"tip",
-                            [self.totalTextField        text], @"total",       
-                            nil];
-    
-    self.dictionary = dict;
-    
-    [self.delegate addNewPurchase:self.dictionary withIndex:self.index];
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    if ([self isTipValid] && [self isAmountValid])
+    {
+        NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:
+                              [self.payeeTextField        text], @"payee",
+                              [self.dateTextField         text], @"date",
+                              [self.descriptionTextField  text], @"description",
+                              [self.amountTextField       text], @"amount",
+                              [self.tipTextField          text], @"tip",
+                              [self.totalTextField        text], @"total",
+                              nil];
+        
+        self.dictionary = dict;
+        
+        [self.delegate addNewPurchase:self.dictionary withIndex:self.index];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -76,9 +79,42 @@
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     textField.text = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
     self.totalTextField.text = [self calculateTotal];
 
     return NO;
+}
+
+- (BOOL)isAmountValid
+{
+    if ([[self getAmountTextField] floatValue] < 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid Amount"
+                                                        message:@"Amount can't be negative"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        
+        return NO;
+    }
+    return YES;
+}
+
+- (BOOL)isTipValid
+{
+    if ([[self getTipTextField] floatValue] > 100.00 || [[self getTipTextField] floatValue] < 0.00 )
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid Tip"
+                                                        message:@"Tip Must be between 0 and 100"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        
+        return NO;
+    }
+    return YES;
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
@@ -87,6 +123,7 @@
     [currencyFormatter setLocale:[NSLocale currentLocale]];
     [currencyFormatter setMaximumFractionDigits:2];
     [currencyFormatter setMinimumFractionDigits:2];
+    [currencyFormatter setNegativeFormat:@"-¤#,##0.00"];
     [currencyFormatter setAlwaysShowsDecimalSeparator:YES];
     
     if ([textField isEqual:self.amountTextField])
@@ -101,36 +138,36 @@
     }
     else if ([textField isEqual:self.tipTextField])
     {
-        if ([self.tipTextField.text floatValue] > 100 || [self.tipTextField.text floatValue] < 0)
-        {
-            NSLog(@"Show Alert");
-            self.tipTextField.text = @"";
-        }
-        else
-        {
-            [currencyFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-            
-            NSNumber *someAmount = [NSNumber numberWithDouble:[textField.text doubleValue]];
-            NSString *string = [currencyFormatter stringFromNumber:someAmount];
-            
-            textField.text = [NSString stringWithFormat:@"%@ %%", string];
-        }
+        [currencyFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        
+        NSNumber *someAmount = [NSNumber numberWithDouble:[textField.text doubleValue]];
+        NSString *string = [currencyFormatter stringFromNumber:someAmount];
+        
+        textField.text = [NSString stringWithFormat:@"%@ %%", string];
+
     }
 }
 
 - (NSString *) calculateTotal
 {
-    NSString *amountString  = [self.amountTextField.text    stringByReplacingOccurrencesOfString:@"$" withString:@""];
-    amountString            = [amountString                 stringByReplacingOccurrencesOfString:@"," withString:@""];
-    NSString *tipString     = [self.tipTextField.text       stringByReplacingOccurrencesOfString:@"%" withString:@""];
-    
-    float amount = [amountString floatValue];
-    float tip    = [tipString    floatValue];
+    float amount = [[self getAmountTextField] floatValue];
+    float tip    = [[self getTipTextField]    floatValue];
     
     float total = ((amount/100) * tip) + amount;
     
     return [NSString stringWithFormat:@"$%.2f", total];
-    
+}
+
+-(NSString *)getTipTextField
+{
+    return [self.tipTextField.text       stringByReplacingOccurrencesOfString:@"%" withString:@""];
+}
+
+-(NSString *)getAmountTextField
+{
+    NSString *amountString  = [self.amountTextField.text    stringByReplacingOccurrencesOfString:@"$" withString:@""];
+    amountString            = [amountString                 stringByReplacingOccurrencesOfString:@"," withString:@""];
+    return amountString;
 }
 
 @end
